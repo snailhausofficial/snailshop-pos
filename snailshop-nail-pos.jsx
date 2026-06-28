@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import html2canvas from "html2canvas";
 
 const SERVICES = [
   { id: 1,  name: "สีพื้น",          price: 149, emoji: "💅" },
@@ -32,6 +33,7 @@ function generateOrderId() {
 
 export default function SnailShopPOS() {
   const [screen, setScreen] = useState("order");
+  const cardRef = useRef(null);
   const [customerName, setCustomerName] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [larnPrice, setLarnPrice] = useState("");
@@ -66,7 +68,7 @@ export default function SnailShopPOS() {
         <div style={{ width: "100%", maxWidth: 380 }}>
 
           {/* Card */}
-          <div style={{ background: "#fff", borderRadius: 24, overflow: "hidden", boxShadow: "0 8px 40px rgba(233,30,99,0.13)" }}>
+          <div ref={cardRef} style={{ background: "#fff", borderRadius: 24, overflow: "hidden", boxShadow: "0 8px 40px rgba(233,30,99,0.13)" }}>
 
             {/* Header */}
             <div style={{ background: `linear-gradient(135deg,#f06292,${Pink})`, padding: "22px 24px 18px", position: "relative" }}>
@@ -147,7 +149,14 @@ export default function SnailShopPOS() {
                   style={{ flex: 1, padding: "12px", borderRadius: 14, border: `2px solid ${Pink}`, background: "#fff", color: Pink, fontWeight: 800, cursor: "pointer", fontSize: 14 }}>
                   ← แก้ไข
                 </button>
-                <button onClick={() => { alert("กด Screenshot / Share เพื่อเซฟรูปได้เลยค่า 🐌") }}
+                <button onClick={() => {
+                  html2canvas(cardRef.current, { scale: 3, useCORS: true, backgroundColor: null }).then(canvas => {
+                    const link = document.createElement("a");
+                    link.download = "snailshop-summary.png";
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                  });
+                }}
                   style={{ flex: 1, padding: "12px", borderRadius: 14, border: "none", background: `linear-gradient(135deg,#f06292,${Pink})`, color: "#fff", fontWeight: 800, cursor: "pointer", fontSize: 14 }}>
                   📸 เซฟรูป
                 </button>
