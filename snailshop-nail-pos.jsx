@@ -5,7 +5,7 @@ const SERVICES = [
   { id: 1,  name: "สีพื้น",          price: 149, emoji: "💅" },
   { id: 2,  name: "สีลูกแก้ว",       price: 250, emoji: "🫧" },
   { id: 3,  name: "สีแฟลช",          price: 200, emoji: "⚡" },
-  { id: 4,  name: "ออมเบ้ / ขัดผง",  price: 200, emoji: "🌈" },
+  { id: 4,  name: "ออมเบร / ขัดผง",  price: 200, emoji: "🌈" },
   { id: 5,  name: "เฟร้นเนล",        price: 200, emoji: "🤍" },
   { id: 6,  name: "ลาย",             price: 20,  rangeMax: 80, emoji: "🌸" },
   { id: 7,  name: "ต่อเล็บชิดโคน",  price: 150, emoji: "✨" },
