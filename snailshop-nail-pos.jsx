@@ -1,6 +1,29 @@
 import { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 
+// ── Supabase config ──────────────────────────────────────────────
+const SUPABASE_URL = "https://ugyzgflzcriqjjkvsfch.supabase.co";
+const SUPABASE_KEY = "sb_publishable_FD_RGbgYu-v3q7BlcF8lVQ_FqQbebQ5";
+
+async function saveOrder(data) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(data)
+    });
+    return res.ok;
+  } catch (e) {
+    console.error("Save order error:", e);
+    return false;
+  }
+}
+
 // ── Snail Shop CI — Brand Book v1.0 ─────────────────────────────────
 const C = {
   sweetPink: "#FFB6C1",   // พื้นหลังรอง
@@ -311,7 +334,20 @@ export default function SnailShopPOS() {
         )}
 
         <button
-          onClick={() => selectedItems.length > 0 && setScreen("summary")}
+          onClick={async () => {
+            if (selectedItems.length === 0) return;
+            await saveOrder({
+              order_id: orderId,
+              customer_name: customerName || "ไม่ระบุ",
+              services: selectedItems.map(i => `${i.name} (${getItemPrice(i)}฿)`).join(", "),
+              total: total,
+              note: note || null,
+              appt_date: apptDate || null,
+              appt_time: apptTime || null,
+              created_at: new Date().toISOString()
+            });
+            setScreen("summary");
+          }}
           disabled={selectedItems.length === 0}
           style={{
             width: "100%", padding: "17px", borderRadius: 18, border: "none",
