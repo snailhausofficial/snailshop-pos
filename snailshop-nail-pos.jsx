@@ -5,12 +5,6 @@ import html2canvas from "html2canvas";
 const SUPABASE_URL = "https://ugyzgflzcriqjjkvsfch.supabase.co";
 const SUPABASE_KEY = "sb_publishable_FD_RGbgYu-v3q7BlcF8lVQ_FqQbebQ5";
 
-const LINE_TOKEN = "IMiW6beyN5bktCu2OsE3Zo9h67LnmaGWlKawZC+5jHpenVyaYWhJvIiwvMzPWRgICZyhM0DXGSQpbCqQO5fcZPbT5BiRRamqKj0AtJs7e+iGA1bE1sE2g43a/wDel6JNcrKLCANnPUUbS5HAEYvaowdB04t89/1O/w1cDnyilFU=";
-const LINE_USER_IDS = [
-  "U3ffb096501297ba524edd862473d9b84", // มาย
-  "U98f03b69129393d3961317664d34de01",  // ดา
-];
-
 async function saveOrder(data) {
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
@@ -31,30 +25,15 @@ async function saveOrder(data) {
 }
 
 async function notifyLine(data) {
-  const msg = [
-    "🐌 ออเดอร์ใหม่!",
-    `👤 ลูกค้า: ${data.customer_name}`,
-    `💅 บริการ: ${data.services}`,
-    `💰 รวม: ${data.total} ฿`,
-    data.note ? `💬 หมายเหตุ: ${data.note}` : "",
-    data.appt_date ? `📅 นัด: ${data.appt_date} ${data.appt_time || ""}` : "",
-    `🔖 Order ID: ${data.order_id}`
-  ].filter(Boolean).join("\n");
-
   try {
-    await Promise.all(LINE_USER_IDS.map(userId =>
-      fetch("https://api.line.me/v2/bot/message/push", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${LINE_TOKEN}`
-        },
-        body: JSON.stringify({
-          to: userId,
-          messages: [{ type: "text", text: msg }]
-        })
-      })
-    ));
+    await fetch("https://ugyzgflzcriqjjkvsfch.supabase.co/functions/v1/notify-line", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+      },
+      body: JSON.stringify(data)
+    });
   } catch (e) {
     console.error("LINE notify error:", e);
   }
